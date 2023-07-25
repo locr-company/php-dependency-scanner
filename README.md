@@ -1,6 +1,7 @@
 ![php](https://img.shields.io/badge/php-%3E%3D%208.1-8892BF.svg)
 [![codecov](https://codecov.io/gh/locr-company/php-dependency-scanner/branch/main/graph/badge.svg?token=FsUYYO0nve)](https://codecov.io/gh/locr-company/php-dependency-scanner)
-![github_workflow_status](https://img.shields.io/github/actions/workflow/status/locr-company/php-csv-reader/php.yml)
+![github_workflow_status](https://img.shields.io/github/actions/workflow/status/locr-company/php-dependency-scanner/php.yml)
+![github_tag](https://img.shields.io/github/v/tag/locr-company/php-dependency-scanner)
 
 # 1. Installation
 
