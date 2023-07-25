@@ -1,4 +1,5 @@
 ![php](https://img.shields.io/badge/php-%3E%3D%208.1-8892BF.svg)
+![github_workflow_status](https://img.shields.io/github/actions/workflow/status/locr-company/php-csv-reader/php.yml)
 
 # 1. Installation
 
