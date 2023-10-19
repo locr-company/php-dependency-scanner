@@ -6,6 +6,8 @@ namespace Locr\Lib;
 
 class Dependencies
 {
+    public const DEFAULT_MAX_RECURSION_DEPTH = 500;
+
     private static function forceComposerJsonCouldNotBeenRead(): bool
     {
         $env = getenv('FORCE_COMPOSER_JSON_COULD_NOT_BEEN_READ');
@@ -36,6 +38,7 @@ class Dependencies
     public static function getComposerDependencies(
         string $path,
         bool $withDev = false,
+        int $maxRecursionDepth = self::DEFAULT_MAX_RECURSION_DEPTH,
         bool $filesAreRequired = true
     ): array {
         $dependencies = [];
@@ -98,9 +101,10 @@ class Dependencies
                 foreach ($composerJson[$arrayKeyToScan] as $name => $version) {
                     if (isset($composerLock[$packagesKey]) && is_array($composerLock[$packagesKey])) {
                         $packageDependencies = self::getComposerPackageDependenciesRecursive(
-                            $composerLock[$packagesKey],
-                            $name,
-                            $withDev
+                            packages: $composerLock[$packagesKey],
+                            packageName: $name,
+                            withDev: $withDev,
+                            maxRecursionDepth: $maxRecursionDepth
                         );
                         if (isset($packageDependencies[$name])) {
                             $dependencies[$name] = $packageDependencies[$name];
@@ -126,9 +130,15 @@ class Dependencies
     private static function getComposerPackageDependenciesRecursive(
         array $packages,
         string $packageName,
-        bool $withDev = false
+        bool $withDev = false,
+        int $maxRecursionDepth = -1,
+        int $currentRecursionDepth = 0
     ): array {
         $dependencies = [];
+
+        if ($maxRecursionDepth > 0 && $currentRecursionDepth > $maxRecursionDepth) {
+            return $dependencies;
+        }
 
         foreach ($packages as $package) {
             if (is_array($package) && isset($package['name'])) {
@@ -156,9 +166,11 @@ class Dependencies
                             continue;
                         }
                         $subPackages = self::getComposerPackageDependenciesRecursive(
-                            $packages,
-                            $packageRequirement,
-                            $withDev
+                            packages: $packages,
+                            packageName: $packageRequirement,
+                            withDev: $withDev,
+                            maxRecursionDepth: $maxRecursionDepth,
+                            currentRecursionDepth: $currentRecursionDepth + 1
                         );
                         if (isset($subPackages[$packageRequirement])) {
                             $dependencies[$packageRequirement] = $subPackages[$packageRequirement];
@@ -180,8 +192,16 @@ class Dependencies
     /**
      * @return array<string, DependencyData>
      */
-    public static function getDependencies(string $path, bool $withDev = false): array
-    {
-        return self::getComposerDependencies(path: $path, withDev: $withDev, filesAreRequired: false);
+    public static function getDependencies(
+        string $path,
+        bool $withDev = false,
+        int $maxRecursionDepth = self::DEFAULT_MAX_RECURSION_DEPTH
+    ): array {
+        return self::getComposerDependencies(
+            path: $path,
+            withDev: $withDev,
+            maxRecursionDepth: $maxRecursionDepth,
+            filesAreRequired: false
+        );
     }
 }
