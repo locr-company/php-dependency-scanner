@@ -13,6 +13,9 @@ use PHPUnit\Framework\TestCase;
  */
 final class DependenciesTest extends TestCase
 {
+    private const GET_COMPOSER_DEPENDENCIES_METHOD_SIGNATURE =
+        'Locr\Lib\Dependencies::getComposerDependencies(string $path, bool $filesAreRequired): array';
+
     protected function setUp(): void
     {
         putenv('FORCE_COMPOSER_JSON_COULD_NOT_BEEN_READ=0');
@@ -27,8 +30,7 @@ final class DependenciesTest extends TestCase
     public function testGetComposerDependenciesComposerJsonDoesNotExists(): void
     {
         $this->expectExceptionMessage(
-            'Locr\Lib\Dependencies::getComposerDependencies(string $path, bool $filesAreRequired): array' .
-                ' => composer.json does not exists'
+            self::GET_COMPOSER_DEPENDENCIES_METHOD_SIGNATURE . ' => composer.json does not exists'
         );
 
         Dependencies::getComposerDependencies(
@@ -45,8 +47,7 @@ final class DependenciesTest extends TestCase
     public function testGetComposerDependenciesComposerLockDoesNotExists(): void
     {
         $this->expectExceptionMessage(
-            'Locr\Lib\Dependencies::getComposerDependencies(string $path, bool $filesAreRequired): array' .
-                ' => composer.lock does not exists'
+            self::GET_COMPOSER_DEPENDENCIES_METHOD_SIGNATURE . ' => composer.lock does not exists'
         );
 
         Dependencies::getComposerDependencies(
@@ -103,8 +104,7 @@ final class DependenciesTest extends TestCase
     public function testGetDependenciesComposerJsonCouldNotBeenRead(): void
     {
         $this->expectExceptionMessage(
-            'Locr\Lib\Dependencies::getComposerDependencies(string $path, bool $filesAreRequired): array' .
-                ' => composer.json could not been read'
+            self::GET_COMPOSER_DEPENDENCIES_METHOD_SIGNATURE . ' => composer.json could not been read'
         );
 
         putenv('FORCE_COMPOSER_JSON_COULD_NOT_BEEN_READ=1');
@@ -118,8 +118,7 @@ final class DependenciesTest extends TestCase
     public function testGetDependenciesComposerJsonDataIsNotAnArray(): void
     {
         $this->expectExceptionMessage(
-            'Locr\Lib\Dependencies::getComposerDependencies(string $path, bool $filesAreRequired): array' .
-                ' => composer.json data is not an array'
+            self::GET_COMPOSER_DEPENDENCIES_METHOD_SIGNATURE . ' => composer.json data is not an array'
         );
 
         putenv('FORCE_COMPOSER_JSON_DATA_IS_NOT_AN_ARRAY=1');
@@ -133,8 +132,7 @@ final class DependenciesTest extends TestCase
     public function testGetDependenciesComposerLockCouldNotBeenRead(): void
     {
         $this->expectExceptionMessage(
-            'Locr\Lib\Dependencies::getComposerDependencies(string $path, bool $filesAreRequired): array' .
-                ' => composer.lock could not been read'
+            self::GET_COMPOSER_DEPENDENCIES_METHOD_SIGNATURE . ' => composer.lock could not been read'
         );
 
         putenv('FORCE_COMPOSER_LOCK_COULD_NOT_BEEN_READ=1');
@@ -148,8 +146,7 @@ final class DependenciesTest extends TestCase
     public function testGetDependenciesComposerLockDataIsNotAnArray(): void
     {
         $this->expectExceptionMessage(
-            'Locr\Lib\Dependencies::getComposerDependencies(string $path, bool $filesAreRequired): array' .
-                ' => composer.lock data is not an array'
+            self::GET_COMPOSER_DEPENDENCIES_METHOD_SIGNATURE . ' => composer.lock data is not an array'
         );
 
         putenv('FORCE_COMPOSER_LOCK_DATA_IS_NOT_AN_ARRAY=1');

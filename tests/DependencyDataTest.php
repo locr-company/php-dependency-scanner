@@ -13,6 +13,8 @@ use PHPUnit\Framework\TestCase;
  */
 final class DependencyDataTest extends TestCase
 {
+    private const EXAMPLE_WEBSITE = 'https://example.com';
+
     /**
      * @covers ::__construct
      * @covers ::__get
@@ -28,13 +30,13 @@ final class DependencyDataTest extends TestCase
 
         $constructor = new DependencyData(
             version: '1.0',
-            website: 'https://example.com',
+            website: self::EXAMPLE_WEBSITE,
             licenses: ['MIT'],
             dependencies: ['sub' => new DependencyData()]
         );
 
         $this->assertEquals('1.0', $constructor->Version);
-        $this->assertEquals('https://example.com', $constructor->Website);
+        $this->assertEquals(self::EXAMPLE_WEBSITE, $constructor->Website);
         $this->assertEquals(['MIT'], $constructor->Licenses);
         $this->assertEquals(['sub' => new DependencyData()], $constructor->Dependencies);
     }
@@ -49,7 +51,7 @@ final class DependencyDataTest extends TestCase
 
         $subDepData = new DependencyData(
             version: '1.0',
-            website: 'https://example.com',
+            website: self::EXAMPLE_WEBSITE,
             licenses: ['MIT']
         );
         $depData->addDependency('sub', $subDepData);
@@ -86,8 +88,8 @@ final class DependencyDataTest extends TestCase
     public function testSetWebsite(): void
     {
         $depData = new DependencyData();
-        $depData->setWebsite('https://example.com');
+        $depData->setWebsite(self::EXAMPLE_WEBSITE);
 
-        $this->assertEquals('https://example.com', $depData->Website);
+        $this->assertEquals(self::EXAMPLE_WEBSITE, $depData->Website);
     }
 }

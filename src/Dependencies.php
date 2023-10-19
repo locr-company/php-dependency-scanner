@@ -4,32 +4,30 @@ declare(strict_types=1);
 
 namespace Locr\Lib;
 
+use Locr\Lib\Exceptions\DependencyException;
+
 class Dependencies
 {
     public const DEFAULT_MAX_RECURSION_DEPTH = 500;
 
     private static function forceComposerJsonCouldNotBeenRead(): bool
     {
-        $env = getenv('FORCE_COMPOSER_JSON_COULD_NOT_BEEN_READ');
-        return ($env === '1');
+        return getenv('FORCE_COMPOSER_JSON_COULD_NOT_BEEN_READ') === '1';
     }
 
     private static function forceComposerJsonDataIsNotAnArray(): bool
     {
-        $env = getenv('FORCE_COMPOSER_JSON_DATA_IS_NOT_AN_ARRAY');
-        return ($env === '1');
+        return getenv('FORCE_COMPOSER_JSON_DATA_IS_NOT_AN_ARRAY') === '1';
     }
 
     private static function forceComposerLockCouldNotBeenRead(): bool
     {
-        $env = getenv('FORCE_COMPOSER_LOCK_COULD_NOT_BEEN_READ');
-        return ($env === '1');
+        return getenv('FORCE_COMPOSER_LOCK_COULD_NOT_BEEN_READ') === '1';
     }
 
     private static function forceComposerLockDataIsNotAnArray(): bool
     {
-        $env = getenv('FORCE_COMPOSER_LOCK_DATA_IS_NOT_AN_ARRAY');
-        return ($env === '1');
+        return getenv('FORCE_COMPOSER_LOCK_DATA_IS_NOT_AN_ARRAY') === '1';
     }
 
     /**
@@ -47,7 +45,7 @@ class Dependencies
         $composerLockFilename = $path . DIRECTORY_SEPARATOR . 'composer.lock';
         if (!file_exists($composerJsonFilename)) {
             if ($filesAreRequired) {
-                throw new \Exception(
+                throw new DependencyException(
                     __METHOD__ . '(string $path, bool $filesAreRequired): array => composer.json does not exists!'
                 );
             }
@@ -55,7 +53,7 @@ class Dependencies
         }
         if (!file_exists($composerLockFilename)) {
             if ($filesAreRequired) {
-                throw new \Exception(
+                throw new DependencyException(
                     __METHOD__ . '(string $path, bool $filesAreRequired): array => composer.lock does not exists!'
                 );
             }
@@ -63,27 +61,27 @@ class Dependencies
         }
         $composerJsonContent = file_get_contents($composerJsonFilename);
         if ($composerJsonContent === false || self::forceComposerJsonCouldNotBeenRead()) {
-            throw new \Exception(
+            throw new DependencyException(
                 __METHOD__ . '(string $path, bool $filesAreRequired): array => composer.json could not been read!'
             );
         }
         $composerLockContent = file_get_contents($composerLockFilename);
         if ($composerLockContent === false || self::forceComposerLockCouldNotBeenRead()) {
-            throw new \Exception(
+            throw new DependencyException(
                 __METHOD__ . '(string $path, bool $filesAreRequired): array => composer.lock could not been read!'
             );
         }
 
         $composerJson = json_decode($composerJsonContent, true);
         if (!is_array($composerJson) || self::forceComposerJsonDataIsNotAnArray()) {
-            throw new \Exception(
+            throw new DependencyException(
                 __METHOD__ . '(string $path, bool $filesAreRequired): array => composer.json data is not an array!'
             );
         }
 
         $composerLock = json_decode($composerLockContent, true);
         if (!is_array($composerLock) || self::forceComposerLockDataIsNotAnArray()) {
-            throw new \Exception(
+            throw new DependencyException(
                 __METHOD__ . '(string $path, bool $filesAreRequired): array => composer.lock data is not an array!'
             );
         }
@@ -154,10 +152,8 @@ class Dependencies
                 if (isset($package['license']) && is_array($package['license'])) {
                     $dependency->setLicenses($package['license']);
                 }
-                if (isset($package['source']) && is_array($package['source'])) {
-                    if (isset($package['source']['url'])) {
-                        $dependency->setWebsite($package['source']['url']);
-                    }
+                if (isset($package['source']) && is_array($package['source']) && isset($package['source']['url'])) {
+                    $dependency->setWebsite($package['source']['url']);
                 }
 
                 $dependencies[$packageName] = $dependency;
