@@ -125,6 +125,7 @@ class Dependencies
 
     /**
      * @param array<mixed> $packages
+     * @param string[] $alreadyUsedPackages
      * @return array<string, DependencyData> $dependencies
      */
     private static function getComposerPackageDependenciesRecursive(
@@ -132,7 +133,8 @@ class Dependencies
         string $packageName,
         bool $withDev = false,
         int $maxRecursionDepth = -1,
-        int $currentRecursionDepth = 0
+        int $currentRecursionDepth = 0,
+        array $alreadyUsedPackages = []
     ): array {
         $dependencies = [];
 
@@ -159,10 +161,15 @@ class Dependencies
                 }
 
                 $dependencies[$packageName] = $dependency;
+                $alreadyUsedPackages[] = $packageName;
 
                 if (isset($package['require']) && is_array($package['require'])) {
                     foreach ($package['require'] as $packageRequirement => $packageRequirementVersion) {
                         if ($packageRequirement === 'php') {
+                            continue;
+                        }
+
+                        if (in_array($packageRequirement, $alreadyUsedPackages)) {
                             continue;
                         }
                         $subPackages = self::getComposerPackageDependenciesRecursive(
@@ -170,10 +177,12 @@ class Dependencies
                             packageName: $packageRequirement,
                             withDev: $withDev,
                             maxRecursionDepth: $maxRecursionDepth,
-                            currentRecursionDepth: $currentRecursionDepth + 1
+                            currentRecursionDepth: $currentRecursionDepth + 1,
+                            alreadyUsedPackages: $alreadyUsedPackages
                         );
                         if (isset($subPackages[$packageRequirement])) {
                             $dependencies[$packageRequirement] = $subPackages[$packageRequirement];
+                            $alreadyUsedPackages[] = $packageRequirement;
                             foreach ($subPackages as $dependencyName => $dependencyData) {
                                 if ($dependencyName === $packageRequirement) {
                                     continue;
