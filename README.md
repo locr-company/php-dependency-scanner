@@ -27,6 +27,5 @@ Clone the repository
 
 ```bash
 git clone git@github.com:locr-company/php-dependency-scanner.git
-cd php-dependency-scanner/.git/hooks && ln -s ../../git-hooks/* . && cd ../..
-composer install
+cd php-dependency-scanner && composer install
 ```
