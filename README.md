@@ -2,8 +2,8 @@
 [![codecov](https://codecov.io/gh/locr-company/php-dependency-scanner/branch/main/graph/badge.svg?token=FsUYYO0nve)](https://codecov.io/gh/locr-company/php-dependency-scanner)
 ![github_workflow_status](https://img.shields.io/github/actions/workflow/status/locr-company/php-dependency-scanner/php-8.1.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=locr-company_php-dependency-scanner&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=locr-company_php-dependency-scanner)
-![github_tag](https://img.shields.io/github/v/tag/locr-company/php-dependency-scanner)
-![packagist](https://img.shields.io/packagist/v/locr-company/dependency-scanner)
+[![github_tag](https://img.shields.io/github/v/tag/locr-company/php-dependency-scanner)](https://github.com/locr-company/php-dependency-scanner/tags)
+[![packagist](https://img.shields.io/packagist/v/locr-company/dependency-scanner)](https://packagist.org/packages/locr-company/dependency-scanner)
 
 # 1. Installation
 
