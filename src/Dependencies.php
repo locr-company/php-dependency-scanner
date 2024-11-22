@@ -97,7 +97,11 @@ class Dependencies
                     $packagesKey = 'packages-dev';
                 }
                 foreach ($composerJson[$arrayKeyToScan] as $name => $version) {
-                    if (isset($composerLock[$packagesKey]) && is_array($composerLock[$packagesKey])) {
+                    if (
+                        isset($composerLock[$packagesKey]) &&
+                        is_array($composerLock[$packagesKey]) &&
+                        is_string($name)
+                    ) {
                         $packageDependencies = self::getComposerPackageDependenciesRecursive(
                             packages: $composerLock[$packagesKey],
                             packageName: $name,
@@ -146,13 +150,24 @@ class Dependencies
                     continue;
                 }
                 $dependency = new DependencyData();
-                if (isset($package['version'])) {
+                if (isset($package['version']) && is_string($package['version'])) {
                     $dependency->setVersion($package['version']);
                 }
                 if (isset($package['license']) && is_array($package['license'])) {
-                    $dependency->setLicenses($package['license']);
+                    $licenses = [];
+                    foreach ($package['license'] as $license) {
+                        if (is_string($license)) {
+                            $licenses[] = $license;
+                        }
+                    }
+                    $dependency->setLicenses($licenses);
                 }
-                if (isset($package['source']) && is_array($package['source']) && isset($package['source']['url'])) {
+                if (
+                    isset($package['source']) &&
+                    is_array($package['source']) &&
+                    isset($package['source']['url']) &&
+                    is_string($package['source']['url'])
+                ) {
                     $dependency->setWebsite($package['source']['url']);
                 }
 
@@ -161,6 +176,9 @@ class Dependencies
 
                 if (isset($package['require']) && is_array($package['require'])) {
                     foreach ($package['require'] as $packageRequirement => $packageRequirementVersion) {
+                        if (!is_string($packageRequirement)) {
+                            continue;
+                        }
                         if ($packageRequirement === 'php') {
                             continue;
                         }

@@ -10,17 +10,26 @@
             "role": "Developer"
         }
     ],
+    "config": {
+        "allow-plugins": {
+            "captainhook/hook-installer": true,
+            "phpstan/extension-installer": true
+        },
+        "platform": {
+            "php": "8.1"
+        }
+    },
     "require": {
         "php": ">=8.1"
     },
     "require-dev": {
         "captainhook/captainhook": "^5.23",
         "captainhook/hook-installer": "^1.0",
-        "phpstan/phpstan": "^1.11",
+        "phpstan/phpstan": "^2.0",
         "phpstan/extension-installer": "^1.3",
-        "phpstan/phpstan-deprecation-rules": "^1.2",
+        "phpstan/phpstan-deprecation-rules": "^2.0",
         "phpunit/phpunit": "^10.5",
-        "squizlabs/php_codesniffer": "^3.9"
+        "squizlabs/php_codesniffer": "^3.11"
     },
     "scripts": {
         "dev:analyze": [
@@ -30,6 +39,7 @@
         "dev:analyze:phpstan-8.1": "phpstan --configuration=phpstan-8.1.neon --memory-limit=256M",
         "dev:analyze:phpstan-8.2": "phpstan --configuration=phpstan-8.2.neon --memory-limit=256M",
         "dev:analyze:phpstan-8.3": "phpstan --configuration=phpstan-8.3.neon --memory-limit=256M",
+        "dev:analyze:phpstan-8.4": "phpstan --configuration=phpstan-8.4.neon --memory-limit=256M",
         "dev:lint": [
             "@dev:lint:phpcs"
         ],
@@ -47,12 +57,6 @@
     "autoload": {
         "psr-4": {
             "Locr\\Lib\\": "src/"
-        }
-    },
-    "config": {
-        "allow-plugins": {
-            "captainhook/hook-installer": true,
-            "phpstan/extension-installer": true
         }
     }
 }
